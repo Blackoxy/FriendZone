@@ -7,7 +7,20 @@
 
 import UIKit
 
-class MainCoordinator: Coordinator {
+class MainCoordinator: Coordinator, FriendsTableDelegate, SetFriendDelegate {
+    func addedFriend(friend: Friend) {
+        guard let vc = navController.viewControllers.first
+                as? FriendsTableViewController else { return }
+        vc.update(friend: friend)
+    }
+
+    func configureFriendSelected(friend: Friend) {
+        let vc = SetFriendTableViewController.instantiate()
+        vc.delegate = self
+        vc.friend = friend
+        navController.pushViewController(vc, animated: true)
+    }
+
     let window: UIWindow
     required init(window: UIWindow) {
         self.window = window
@@ -15,7 +28,7 @@ class MainCoordinator: Coordinator {
 
     lazy var friendsTableViewController: FriendsTableViewController = {
         let vc = FriendsTableViewController.instantiate()
-        vc.coordinator = self
+        vc.delegate = self
         return vc
     }()
 
@@ -27,18 +40,4 @@ class MainCoordinator: Coordinator {
     func start() {
         self.window.rootViewController = navController
     }
-
-    func configure(friend: Friend) {
-        let vc = SetFriendTableViewController.instantiate()
-        vc.coordinator = self
-        vc.friend = friend
-        navController.pushViewController(vc, animated: true)
-    }
-
-    func update(friend: Friend) {
-        guard let vc = navController.viewControllers.first
-                as? FriendsTableViewController else { return }
-        vc.update(friend: friend)
-    }
-
 }

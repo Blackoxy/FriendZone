@@ -7,8 +7,12 @@
 
 import UIKit
 
+protocol SetFriendDelegate {
+    func addedFriend(friend: Friend)
+}
+
 class SetFriendTableViewController: UITableViewController, StoryBoarded {
-    weak var coordinator: MainCoordinator?
+    var delegate: SetFriendDelegate?
     var friend: Friend!
     let now = Date()
     var timeZones = [TimeZone]()
@@ -47,7 +51,7 @@ class SetFriendTableViewController: UITableViewController, StoryBoarded {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        coordinator?.update(friend: friend)
+        delegate?.addedFriend(friend: friend)
     }
 
     @IBAction func nameChanged(_ sender: UITextField) {

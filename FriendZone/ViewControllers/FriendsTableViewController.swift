@@ -7,8 +7,12 @@
 
 import UIKit
 
+protocol FriendsTableDelegate {
+    func configureFriendSelected(friend: Friend)
+}
+
 class FriendsTableViewController: UITableViewController, StoryBoarded {
-    weak var coordinator: MainCoordinator?
+    var delegate: FriendsTableDelegate?
     var friends = [Friend]()
     var selectedFriend: Int? = nil
 
@@ -37,7 +41,7 @@ class FriendsTableViewController: UITableViewController, StoryBoarded {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedFriend = indexPath.row
-        coordinator?.configure(friend: friends[indexPath.row])
+        delegate?.configureFriendSelected(friend: friends[indexPath.row])
     }
 
     func loadData() {
@@ -67,7 +71,8 @@ class FriendsTableViewController: UITableViewController, StoryBoarded {
         tableView.insertRows(at: [IndexPath(row: friends.count - 1, section: 0)], with: .automatic)
         saveData()
         selectedFriend = friends.count - 1
-        coordinator?.configure(friend: friend)
+        delegate?.configureFriendSelected(friend: friend)
+        
     }
 
     func update(friend: Friend) {
